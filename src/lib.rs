@@ -62,9 +62,9 @@ fn open(filename: &str) -> CatrResult<Box<dyn BufRead>> {
 }
 
 pub fn run(config: Config) -> CatrResult<()> {
-    for filename in config.files {
-        match open(&filename) {
-            Err(e) => eprintln!("Failed to open {}: {}", filename, e),
+    for file in config.files {
+        match open(&file) {
+            Err(e) => eprintln!("Failed to open {}: {}", file, e),
             Ok(file) => {
                 let mut last_num = 0;
                 for (line_num, line_result) in file.lines().enumerate() {
