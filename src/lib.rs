@@ -6,7 +6,7 @@ use std::{
 
 use clap::{App, Arg};
 
-type MyResult<T> = Result<T, Box<dyn Error>>;
+type CatrResult<T> = Result<T, Box<dyn Error>>;
 
 #[derive(Debug)]
 pub struct Config {
@@ -15,7 +15,7 @@ pub struct Config {
     number_nonblank_lines: bool,
 }
 
-pub fn get_args() -> MyResult<Config> {
+pub fn get_args() -> CatrResult<Config> {
     let matches = App::new("catr")
         .version("0.1.0")
         .author("wade")
@@ -51,7 +51,7 @@ pub fn get_args() -> MyResult<Config> {
 }
 
 // 定义一个函数，名为 open，参数为文件名 filename，返回类型为自定义类型 MyResult，其中包含一个动态类型的 BufRead 接口的智能指针 Box
-fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
+fn open(filename: &str) -> CatrResult<Box<dyn BufRead>> {
     // 使用 match 表达式来匹配文件名
     match filename {
         // 如果文件名是 "-"，表示要打开标准输入
@@ -61,7 +61,7 @@ fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
     }
 }
 
-pub fn run(config: Config) -> MyResult<()> {
+pub fn run(config: Config) -> CatrResult<()> {
     for filename in config.files {
         match open(&filename) {
             Err(e) => eprintln!("Failed to open {}: {}", filename, e),
