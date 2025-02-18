@@ -91,6 +91,7 @@ pub fn run(config: Config) -> CatrResult<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::{fs::File, io::Write};
 
     #[test]
     fn test_open_standard_input() {
@@ -112,12 +113,35 @@ mod tests {
 
     #[test]
     fn test_run_number_lines() {
+        // 创建一个临时文件，使用Drop trait自动清理
+        struct TempFile {
+            path: String,
+        }
+
+        impl Drop for TempFile {
+            fn drop(&mut self) {
+                if let Err(e) = std::fs::remove_file(&self.path) {
+                    eprintln!("Error removing temp file: {}", e);
+                }
+            }
+        }
+
+        let temp_file = TempFile {
+            path: "temp.txt".to_string(),
+        };
+
+        File::create(&temp_file.path)
+            .unwrap()
+            .write_all(b"Hello, world!\nHello, world!\nHello, world!\n")
+            .unwrap();
+
         let config = Config {
-            files: vec!["-".to_string()],
+            files: vec![temp_file.path.clone()],
             number_lines: true,
             number_nonblank_lines: false,
         };
         let result = run(config);
         assert!(result.is_ok());
+        // temp_file会在作用域结束时自动删除文件
     }
 }
