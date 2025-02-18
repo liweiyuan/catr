@@ -85,3 +85,11 @@ fn run_stdin(input_file: &str, args: &[&str], expected_file: &str) -> TestResult
         .stdout(expected);
     Ok(())
 }
+
+#[test]
+fn test_run_ls() {
+    let mut cmd = std::process::Command::new("ls");
+    let res = cmd.output();
+    assert!(res.is_ok());
+    assert!(res.unwrap().status.success());
+}
